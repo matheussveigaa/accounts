@@ -1,20 +1,23 @@
-defmodule AccountsApi.Domain.Repository.Repository do
+defmodule AccountsApi.Domain.Repository.AccountRepository do
 
-  # @callback get_by_repo_and_username(repo :: String.t(), username :: String.t()) :: {:ok, Repository.t()} | {:error, map()} | :not_found
-  # @callback get_issues(repo :: String.t(), username :: String.t()) :: {:ok, [Issue.t()]} | {:error, map()}
-  # @callback get_contributors(repo :: String.t(), username :: String.t()) :: {:ok, [Contributor.t()]} | {:error, map()}
+  alias AccountsApi.Domain.Entities.{Account, AccountEvent}
 
-  # def get_by_repo_and_username(repo, username) do
-  #   impl().get_by_repo_and_username(repo, username)
-  # end
+  @callback create(account :: Account.t()) :: {:ok, Account.t()} | {:error, any()}
+  @callback update(account :: Account.t()) :: {:ok, Account.t()} | {:error, any()}
 
-  # def get_issues(repo, username) do
-  #   impl().get_issues(repo, username)
-  # end
+  @callback create_event(event :: AccountEvent.t()) :: {:ok, AccountEvent.t()} | {:error, any()}
 
-  # def get_contributors(repo, username) do
-  #   impl().get_contributors(repo, username)
-  # end
+  def create(%Account{} = account) do
+    impl().create(account)
+  end
+
+  def update(%Account{} = account) do
+    impl().update(account)
+  end
+
+  def create_event(%AccountEvent{} = event) do
+    impl().create_event(event)
+  end
 
   defp impl() do
     Application.get_env(:accounts_api, :account_repository_impl)

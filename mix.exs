@@ -10,7 +10,14 @@ defmodule AccountsApi.MixProject do
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -20,7 +27,7 @@ defmodule AccountsApi.MixProject do
   def application do
     [
       mod: {AccountsApi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :mnesia]
     ]
   end
 
@@ -42,7 +49,9 @@ defmodule AccountsApi.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:typed_struct, "~> 0.1.4"},
       {:exconstructor, "~> 1.2.6"},
-      {:tarams, "~> 1.0.0"}
+      {:tarams, "~> 1.0.0"},
+      {:uuid, "~> 1.1"},
+      {:excoveralls, "~> 0.10", only: :test}
     ]
   end
 

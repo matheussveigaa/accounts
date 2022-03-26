@@ -1,4 +1,4 @@
-defmodule AccountApi.Domain.UseCases.AccountUseCases do
-  alias AccountApi.Domain.Repository.AccountRepository
+defmodule AccountsApi.Domain.UseCases.AccountUseCases do
+  alias AccountsApi.Domain.Repository.AccountRepository
 
 end
