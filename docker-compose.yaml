@@ -1,0 +1,19 @@
+version: "3.2"
+volumes:
+  data:
+services:
+  app:
+    build: 
+      context: .
+      args: 
+        - MIX_ENV=${MIX_ENV:-prod}
+    environment: 
+      SECRET_KEY_BASE: FBKSy0toN3Felo0xtYH1sNBTFghzfo4/Lgmw1cFYvgAZixmT9csY+4nc01nQCqU/
+    ports:  
+      - 80:4000
+    networks: 
+      - accounts-api-network
+
+networks:
+    accounts-api-network:
+        driver: bridge
