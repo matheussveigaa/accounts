@@ -14,6 +14,10 @@ defmodule AccountsApi.Domain.UseCases.AccountUseCases do
     AccountRepository.create_event(event)
   end
 
+  def find_by_id(id) do
+    AccountRepository.find_by_id(id)
+  end
+
   def transfer(%Account{} = origin, %Account{} = destination, amount) do
     withdraw = %AccountEvent{type: AccountEvent.get_withdraw_type(), amount: amount, account_id: origin.id, is_transfer: true}
     deposit = %AccountEvent{type: AccountEvent.get_deposit_type(), amount: amount, account_id: destination.id, is_transfer: true}
