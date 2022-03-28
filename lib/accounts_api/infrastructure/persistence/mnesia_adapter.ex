@@ -5,7 +5,7 @@ defmodule AccountsApi.Infrastructure.Persistence.MnesiaAdapter do
     Mnesia.create_schema([node()])
 
     Mnesia.create_table(Accounts, attributes: [:id, :balance])
-    Mnesia.create_table(AccountEvents, attributes: [:id, :account_id, :type, :amount, :created_at])
+    Mnesia.create_table(AccountEvents, attributes: [:id, :account_id, :type, :amount, :created_at, :is_transfer])
 
     Mnesia.start()
   end

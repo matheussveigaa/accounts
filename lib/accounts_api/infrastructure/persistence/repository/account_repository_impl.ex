@@ -24,7 +24,7 @@ defmodule AccountsApi.Infrastructure.Persistence.Repository.AccountRepositoryImp
   def create_event(%AccountEvent{} = event) do
     event = %AccountEvent{event | id: UUID.uuid4(), created_at: DateTime.utc_now()}
 
-    :ok = Mnesia.dirty_write({AccountEvents, event.id, event.account_id, event.type, event.amount, event.created_at})
+    :ok = Mnesia.dirty_write({AccountEvents, event.id, event.account_id, event.type, event.amount, event.created_at, event.is_transfer})
 
     {:ok, event}
   end
