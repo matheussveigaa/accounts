@@ -8,32 +8,32 @@ defmodule AccountsApi.Domain.UseCases.AccountUseCasesTest do
     [
       %AccountEvent{
         amount: 10.23,
-        type: "withdraw",
-        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
+        type: "withdraw"
       },
       %AccountEvent{
         amount: 23.45,
-        type: "deposit",
-        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
+        type: "deposit"
       },
       %AccountEvent{
         amount: 50,
-        type: "withdraw",
-        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
+        type: "withdraw"
       },
       %AccountEvent{
         amount: 100,
-        type: "deposit",
-        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
+        type: "deposit"
       }
     ]
   end
 
-  setup do
+  setup_all do
     AccountUseCases.create(%Account{id: "d99e5658-04a9-4d3d-a6b8-402850d1be7b"})
     AccountUseCases.create(%Account{id: "37332c96-dffe-46f8-8b6b-0de967447153"})
 
-    Enum.each(build_events(), &AccountUseCases.create_event/1)
+    AccountUseCases.create_event(%AccountEvent{
+      amount: 100,
+      type: "deposit",
+      account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
+    })
 
     :ok
   end
@@ -42,8 +42,7 @@ defmodule AccountsApi.Domain.UseCases.AccountUseCasesTest do
     test "Should transfer amount from origin to destination with success" do
       # arrange
       origin = %Account{
-        id: "37332c96-dffe-46f8-8b6b-0de967447153",
-        events: build_events()
+        id: "37332c96-dffe-46f8-8b6b-0de967447153"
       }
 
       # act
@@ -55,7 +54,7 @@ defmodule AccountsApi.Domain.UseCases.AccountUseCasesTest do
       assert not is_nil(balance_origin)
       assert not is_nil(balance_destination)
 
-      assert balance_origin.balance == 42.989999999999995
+      assert balance_origin.balance == 79.77
       assert balance_destination.balance == 20.23
     end
   end

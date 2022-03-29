@@ -6,10 +6,6 @@ defmodule AccountsApi.Domain.UseCases.AccountUseCases do
     AccountRepository.create(account)
   end
 
-  def update(%Account{} = account) do
-    AccountRepository.update(account)
-  end
-
   def create_event(%AccountEvent{} = event) do
     AccountRepository.create_event(event)
   end

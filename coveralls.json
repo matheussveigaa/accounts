@@ -1,0 +1,10 @@
+{
+    "skip_files": [
+      "infrastructure",
+      "lib/accounts_api.ex",
+      "lib/accounts_api/application.ex",
+      "lib/accounts_api/mailer.ex",
+      "lib/accounts_api_web.ex",
+      "lib/accounts_api_web"
+    ]
+  }

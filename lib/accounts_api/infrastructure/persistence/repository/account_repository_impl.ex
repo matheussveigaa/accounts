@@ -16,12 +16,6 @@ defmodule AccountsApi.Infrastructure.Persistence.Repository.AccountRepositoryImp
       {:error, error}
   end
 
-  def update(%Account{} = account) do
-    Mnesia.transaction(fn ->
-      :ok = Mnesia.write({Accounts, account.id, account.balance})
-    end)
-  end
-
   def create_event(%AccountEvent{} = event) do
     event = %AccountEvent{event | id: UUID.uuid4(), created_at: DateTime.utc_now()}
 
