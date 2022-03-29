@@ -8,25 +8,32 @@ defmodule AccountsApi.Domain.UseCases.AccountUseCasesTest do
     [
       %AccountEvent{
         amount: 10.23,
-        type: "withdraw"
+        type: "withdraw",
+        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
       },
       %AccountEvent{
         amount: 23.45,
-        type: "deposit"
+        type: "deposit",
+        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
       },
       %AccountEvent{
         amount: 50,
-        type: "withdraw"
+        type: "withdraw",
+        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
       },
       %AccountEvent{
         amount: 100,
-        type: "deposit"
+        type: "deposit",
+        account_id: "37332c96-dffe-46f8-8b6b-0de967447153"
       }
     ]
   end
 
   setup do
     AccountUseCases.create(%Account{id: "d99e5658-04a9-4d3d-a6b8-402850d1be7b"})
+    AccountUseCases.create(%Account{id: "37332c96-dffe-46f8-8b6b-0de967447153"})
+
+    Enum.each(build_events(), &AccountUseCases.create_event/1)
 
     :ok
   end
@@ -35,16 +42,12 @@ defmodule AccountsApi.Domain.UseCases.AccountUseCasesTest do
     test "Should transfer amount from origin to destination with success" do
       # arrange
       origin = %Account{
-        id: UUID.uuid4(),
+        id: "37332c96-dffe-46f8-8b6b-0de967447153",
         events: build_events()
       }
 
-      destination = %Account{
-        id: UUID.uuid4()
-      }
-
       # act
-      {:ok, accounts} = AccountUseCases.transfer(origin, destination, 20.23)
+      {:ok, accounts} = AccountUseCases.transfer(origin, UUID.uuid4(), 20.23)
 
       [balance_origin, balance_destination] = accounts
 

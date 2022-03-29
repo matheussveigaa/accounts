@@ -35,7 +35,9 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 # Repository impl
-config :accounts_api, :account_repository_impl, AccountsApi.Infrastructure.Persistence.Repository.AccountRepositoryImpl
+config :accounts_api,
+       :account_repository_impl,
+       AccountsApi.Infrastructure.Persistence.Repository.AccountRepositoryImpl
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -12,8 +12,8 @@ defmodule AccountsApi.Infrastructure.Persistence.Repository.AccountRepositoryImp
 
     {:ok, account}
   rescue
-  error ->
-    {:error, error}
+    error ->
+      {:error, error}
   end
 
   def update(%Account{} = account) do
@@ -25,18 +25,29 @@ defmodule AccountsApi.Infrastructure.Persistence.Repository.AccountRepositoryImp
   def create_event(%AccountEvent{} = event) do
     event = %AccountEvent{event | id: UUID.uuid4(), created_at: DateTime.utc_now()}
 
-    :ok = Mnesia.dirty_write({AccountEvents, event.id, event.account_id, event.type, event.amount, event.created_at, event.is_transfer})
+    :ok =
+      Mnesia.dirty_write(
+        {AccountEvents, event.id, event.account_id, event.type, event.amount, event.created_at,
+         event.is_transfer}
+      )
 
     {:ok, event}
   end
 
   def find_by_id(id) do
-    case Mnesia.dirty_match_object({Accounts, id, :_}) do
+    with [account_schema | _tail] <- Mnesia.dirty_match_object({Accounts, id, :_}),
+         account_events_schema <-
+           Mnesia.dirty_match_object({AccountEvents, :_, id, :_, :_, :_, :_}) do
+      account_events =
+        if(not Enum.empty?(account_events_schema),
+          do: Enum.map(account_events_schema, &AccountMapper.schema_account_event_to_domain/1),
+          else: []
+        )
+
+      {:ok, %Account{AccountMapper.schema_to_domain(account_schema) | events: account_events}}
+    else
       [] ->
         :not_found
-
-      [account_schema | _tail] ->
-        {:ok, AccountMapper.schema_to_domain(account_schema)}
     end
   end
 end

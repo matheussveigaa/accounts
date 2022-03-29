@@ -50,5 +50,4 @@ defmodule AccountsApi.Domain.Entities.AccountTest do
       assert balance == 0
     end
   end
-
 end

@@ -62,7 +62,6 @@ defmodule AccountsApi.MixProject do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    [
-    ]
+    []
   end
 end

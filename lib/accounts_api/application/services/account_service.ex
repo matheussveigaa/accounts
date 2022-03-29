@@ -1,36 +1,70 @@
 defmodule AccountsApi.Application.Services.AccountService do
   alias AccountsApi.Domain.UseCases.AccountUseCases
-  alias AccountsApi.Domain.Entities.{Account, AccountEvent}
+  alias AccountsApi.Domain.Entities.Account
+
+  alias AccountsApi.Application.Mappers.AccountMapper
 
   def handle_event(%{"type" => "deposit", "destination" => destination, "amount" => amount}) do
+    case AccountUseCases.deposit(destination, amount) do
+      {:ok, destination_account} ->
+        {:ok,
+         %{
+           "destination" => AccountMapper.domain_to_dto(destination_account)
+         }}
 
-    with {:ok, destination_account} <- AccountUseCases.find_by_id(destination),
-        {:ok, _event_created} <- create_deposit_event(destination_account.id, amount)
-    do
-      destination_account = %Account{destination_account | balance: Account.get_balance(destination_account)}
-
-      {:ok, %{destination: Map.drop(destination_account, [:events])}}
-
-    else
       {:error, error} ->
         {:error, error}
-
-      :not_found ->
-        with {:ok, account_created} <- AccountUseCases.create(%Account{id: destination, balance: amount}),
-          {:ok, _event_created} <- create_deposit_event(account_created.id, amount)
-        do
-          {:ok, %{destination: Map.drop(account_created, [:events])}}
-        end
     end
   end
 
   def handle_event(%{"type" => "withdraw", "origin" => origin, "amount" => amount}) do
+    case AccountUseCases.withdraw(origin, amount) do
+      {:ok, origin_account} ->
+        {:ok, %{"origin" => AccountMapper.domain_to_dto(origin_account)}}
 
+      {:error, error} ->
+        {:error, error}
+
+      :not_found ->
+        :not_found
+    end
   end
 
-  def handle_event(%{"type" => "transfer", "origin" => origin, "amount" => amount, "destination" => destination}) do
+  def handle_event(%{
+        "type" => "transfer",
+        "origin" => origin,
+        "amount" => amount,
+        "destination" => destination
+      }) do
+    case AccountUseCases.find_by_id(origin) do
+      {:ok, origin_account} ->
+        case AccountUseCases.transfer(origin_account, destination, amount) do
+          {:ok, [origin_account_updated, destination_account_updated]} ->
+            {:ok,
+             %{
+               "origin" => AccountMapper.domain_to_dto(origin_account_updated),
+               "destination" => AccountMapper.domain_to_dto(destination_account_updated)
+             }}
 
+          {:error, error} ->
+            {:error, error}
+        end
+
+      {:error, error} ->
+        {:error, error}
+
+      :not_found ->
+        :not_found
+    end
   end
 
-  def create_deposit_event(account_id, amount), do: AccountUseCases.create_event(%AccountEvent{type: AccountEvent.get_deposit_type(), account_id: account_id, amount: amount})
+  def get_balance(account_id) do
+    case AccountUseCases.find_by_id(account_id) do
+      {:ok, account} ->
+        {:ok, Account.get_balance(account)}
+
+      :not_found ->
+        :not_found
+    end
+  end
 end

@@ -5,10 +5,14 @@ defmodule AccountsApiWeb.Router do
     plug :accepts, ["json"]
   end
 
-  # scope "/", AccountsApiWeb do
-  #   pipe_through :api
+  scope "/", AccountsApiWeb do
+    pipe_through :api
 
-  # end
+    post "/event", AccountController, :handle_event
+    post "/reset", AccountController, :reset
+
+    get "/balance", AccountController, :get_balance
+  end
 
   # Enables the Swoosh mailbox preview in development.
   #

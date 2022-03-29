@@ -1,5 +1,4 @@
 defmodule AccountsApi.Domain.Repository.AccountRepository do
-
   alias AccountsApi.Domain.Entities.{Account, AccountEvent}
 
   @callback create(account :: Account.t()) :: {:ok, Account.t()} | {:error, any()}

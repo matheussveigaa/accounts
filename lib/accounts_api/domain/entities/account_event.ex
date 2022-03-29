@@ -5,12 +5,12 @@ defmodule AccountsApi.Domain.Entities.AccountEvent do
   @withdraw_type "withdraw"
 
   typedstruct do
-    field :id, String.t()
-    field :account_id, String.t()
-    field :is_transfer, boolean()
-    field :created_at, DateTime.t()
-    field :type, String.t()
-    field :amount, float()
+    field(:id, String.t())
+    field(:account_id, String.t())
+    field(:is_transfer, boolean())
+    field(:created_at, DateTime.t())
+    field(:type, String.t())
+    field(:amount, float())
   end
 
   def get_withdraw_type(), do: @withdraw_type
