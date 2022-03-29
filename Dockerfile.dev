@@ -1,0 +1,24 @@
+FROM hexpm/elixir:1.12.0-erlang-23.1.2-alpine-3.12.1 as build
+
+RUN apk add --no-cache build-base git python3 curl
+
+WORKDIR /app
+
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+COPY mix.exs mix.lock ./
+RUN mix deps.get
+
+RUN mix deps.compile
+
+COPY lib lib
+
+COPY config config
+
+COPY coveralls.json coveralls.json
+
+COPY test test
+
+RUN mix compile
+
